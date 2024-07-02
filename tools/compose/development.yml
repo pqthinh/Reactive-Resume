@@ -1,24 +1,21 @@
 version: "3.8"
 
-# In this Docker Compose example, we only fire up the services required for local development.
-# This is not advised for production use as it exposes ports to the database insecurely.
-# If you're looking for a production-ready Docker Compose file, check out the `traefik.yml` file.
-
 services:
-  # Database (Postgres)
-  postgres:
-    image: postgres:16-alpine
+  # Database (MySQL)
+  mysql:
+    image: mysql:8.0
     restart: unless-stopped
     ports:
-      - ${POSTGRES_PORT:-5432}:5432
+      - ${MYSQL_PORT:-3306}:3306
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-resume}
+      MYSQL_USER: ${MYSQL_USER:-root}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${MYSQL_USER:-root} --password=${MYSQL_PASSWORD:-password}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,4 +51,4 @@ services:
 
 volumes:
   minio_data:
-  postgres_data:
+  mysql_data:
