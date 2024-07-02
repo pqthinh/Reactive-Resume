@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -29,7 +29,7 @@ model User {
   twoFactorEnabled Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  provider         Provider
+  provider         String   // @map("provider") // Thay thế bằng String
   secrets          Secrets?
   resumes          Resume[]
 }
@@ -40,7 +40,7 @@ model Secrets {
   lastSignedIn         DateTime @default(now())
   verificationToken    String?
   twoFactorSecret      String?
-  twoFactorBackupCodes String[] @default([])
+  twoFactorBackupCodes Json     @default("{}")
   refreshToken         String?
   resetToken           String?  @unique
   userId               String   @unique
@@ -54,7 +54,7 @@ model Resume {
   title      String
   slug       String
   data       Json        @default("{}")
-  visibility Visibility  @default(private)
+  visibility String      @default("private") // Thay thế bằng String
   locked     Boolean     @default(false)
   statistics Statistics?
   userId     String

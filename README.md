@@ -97,3 +97,39 @@ A passion project by [Amruth Pillai](https://www.amruthpillai.com/)
     <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="200px">
   </a>
 </p>
+
+### prisma mysql nestjs
+pnpm prisma generate
+pnpm prisma db pull
+pnpm prisma migrate dev
+
+pnpm prisma generate
+Set up a new Prisma project
+$ pnpm prisma init
+
+Generate artifacts (e.g. Prisma Client)
+$ pnpm prisma generate
+
+Browse your data
+$ pnpm prisma studio
+
+Create migrations from your Prisma schema, apply them to the database, generate artifacts (e.g. Prisma Client)
+$ pnpm prisma migrate dev
+
+Pull the schema from an existing database, updating the Prisma schema
+$ pnpm prisma db pull
+
+Push the Prisma schema state to the database
+$ pnpm prisma db push
+
+Validate your Prisma schema
+$ pnpm prisma validate
+
+Format your Prisma schema
+$ pnpm prisma format
+
+Display Prisma version info
+$ pnpm prisma version
+
+Display Prisma debug info
+$ pnpm prisma debug

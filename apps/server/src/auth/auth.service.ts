@@ -333,14 +333,14 @@ export class AuthService {
       throw new BadRequestException(ErrorMessage.TwoFactorNotEnabled);
     }
 
-    const verified = user.secrets.twoFactorBackupCodes.includes(code);
+    const verified = user.secrets.twoFactorBackupCodes?.includes(code);
 
     if (!verified) {
       throw new BadRequestException(ErrorMessage.InvalidTwoFactorBackupCode);
     }
 
     // Remove the used backup code from the database
-    const backupCodes = user.secrets.twoFactorBackupCodes.filter((c) => c !== code);
+    const backupCodes = user.secrets.twoFactorBackupCodes?.filter((c) => c !== code);
     await this.userService.updateByEmail(email, {
       secrets: { update: { twoFactorBackupCodes: backupCodes } },
     });

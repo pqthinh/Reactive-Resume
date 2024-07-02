@@ -1,79 +1,73 @@
--- CreateEnum
-CREATE TYPE "Provider" AS ENUM ('email', 'github', 'google');
-
--- CreateEnum
-CREATE TYPE "Visibility" AS ENUM ('public', 'private');
-
 -- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "picture" TEXT,
-    "username" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "locale" TEXT NOT NULL DEFAULT 'en-US',
-    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
-    "twoFactorEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "provider" "Provider" NOT NULL,
+CREATE TABLE `User` (
+    `id` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `picture` VARCHAR(255),
+    `username` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `locale` VARCHAR(255) NOT NULL DEFAULT 'en-US',
+    `emailVerified` BOOLEAN NOT NULL DEFAULT false,
+    `twoFactorEnabled` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `provider` VARCHAR(255) NOT NULL,
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    PRIMARY KEY (`id`)
 );
 
 -- CreateTable
-CREATE TABLE "Secrets" (
-    "id" TEXT NOT NULL,
-    "password" TEXT,
-    "lastSignedIn" TIMESTAMP(3),
-    "verificationToken" TEXT,
-    "twoFactorSecret" TEXT,
-    "twoFactorBackupCodes" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "refreshToken" TEXT,
-    "resetToken" TEXT,
-    "userId" TEXT NOT NULL,
+CREATE TABLE `Secrets` (
+    `id` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255),
+    `lastSignedIn` TIMESTAMP,
+    `verificationToken` VARCHAR(255),
+    `twoFactorSecret` VARCHAR(255),
+    `twoFactorBackupCodes` JSON DEFAULT '[]',
+    `refreshToken` VARCHAR(255),
+    `resetToken` VARCHAR(255),
+    `userId` VARCHAR(255) NOT NULL,
 
-    CONSTRAINT "Secrets_pkey" PRIMARY KEY ("id")
+    PRIMARY KEY (`id`)
 );
 
 -- CreateTable
-CREATE TABLE "Resume" (
-    "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
-    "data" JSONB NOT NULL DEFAULT '{}',
-    "visibility" "Visibility" NOT NULL DEFAULT 'private',
-    "locked" BOOLEAN NOT NULL DEFAULT false,
-    "userId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE `Resume` (
+    `id` VARCHAR(255) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL,
+    `data` JSON NOT NULL DEFAULT '{}',
+    `visibility` VARCHAR(255) NOT NULL DEFAULT 'private',
+    `locked` BOOLEAN NOT NULL DEFAULT false,
+    `userId` VARCHAR(255) NOT NULL,
+    `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Resume_pkey" PRIMARY KEY ("id")
+    PRIMARY KEY (`id`)
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+CREATE UNIQUE INDEX `User_username_key` ON `User`(`username`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX `User_email_key` ON `User`(`email`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Secrets_resetToken_key" ON "Secrets"("resetToken");
+CREATE UNIQUE INDEX `Secrets_resetToken_key` ON `Secrets`(`resetToken`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Secrets_userId_key" ON "Secrets"("userId");
+CREATE UNIQUE INDEX `Secrets_userId_key` ON `Secrets`(`userId`);
 
 -- CreateIndex
-CREATE INDEX "Resume_userId_idx" ON "Resume"("userId");
+CREATE INDEX `Resume_userId_idx` ON `Resume`(`userId`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Resume_userId_id_key" ON "Resume"("userId", "id");
+CREATE UNIQUE INDEX `Resume_userId_id_key` ON `Resume`(`userId`, `id`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Resume_userId_slug_key" ON "Resume"("userId", "slug");
+CREATE UNIQUE INDEX `Resume_userId_slug_key` ON `Resume`(`userId`, `slug`);
 
 -- AddForeignKey
-ALTER TABLE "Secrets" ADD CONSTRAINT "Secrets_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Secrets` ADD CONSTRAINT `Secrets_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Resume" ADD CONSTRAINT "Resume_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Resume` ADD CONSTRAINT `Resume_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
