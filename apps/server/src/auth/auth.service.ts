@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { randomBytes } from "node:crypto";
 
 import {
@@ -109,7 +110,7 @@ export class AuthService {
         locale: registerDto.locale,
         provider: "email",
         emailVerified: false, // Set to true if you don't want to verify user's email
-        secrets: { create: { password: hashedPassword } },
+        secrets: { create: { password: hashedPassword, twoFactorBackupCodes: [] } }
       });
 
       // Do not `await` this function, otherwise the user will have to wait for the email to be sent before the response is returned
@@ -333,14 +334,14 @@ export class AuthService {
       throw new BadRequestException(ErrorMessage.TwoFactorNotEnabled);
     }
 
-    const verified = user.secrets.twoFactorBackupCodes?.includes(code);
-
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const verified = (user.secrets.twoFactorBackupCodes as string[])?.includes(code);
     if (!verified) {
       throw new BadRequestException(ErrorMessage.InvalidTwoFactorBackupCode);
     }
-
     // Remove the used backup code from the database
-    const backupCodes = user.secrets.twoFactorBackupCodes?.filter((c) => c !== code);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const backupCodes = (user.secrets.twoFactorBackupCodes as string[])?.filter((c) => c !== code);
     await this.userService.updateByEmail(email, {
       secrets: { update: { twoFactorBackupCodes: backupCodes } },
     });
