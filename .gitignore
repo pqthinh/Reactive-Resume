@@ -45,7 +45,7 @@ stats.html
 
 # Environment Variables
 *.env*
-!.env.example
+!.env
 
 # Lingui Compiled Messages
 apps/client/src/locales/_build/

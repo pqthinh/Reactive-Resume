@@ -7,17 +7,17 @@ version: "3.8"
 
 services:
   # Database (Postgres)
-  postgres:
-    image: postgres:16-alpine
+  mysql:
+    image: mysql:8.0
     restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: admin@123
+      MYSQL_DB: resume
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${MYSQL_USER:-appuser} --password=${MYSQL_PASSWORD:-admin@123}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -60,7 +60,7 @@ services:
     image: amruthpillai/reactive-resume:latest
     restart: unless-stopped
     depends_on:
-      - postgres
+      - mysql
       - minio
       - chrome
     environment:
@@ -77,7 +77,7 @@ services:
       CHROME_URL: wss://printer.example.com
 
       # -- Database (Postgres) --
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      DATABASE_URL: mysql://appuser:admin@123@localhost:3306/resume
 
       # -- Auth --
       ACCESS_TOKEN_SECRET: access_token_secret
@@ -148,5 +148,5 @@ services:
 
 volumes:
   minio_data:
-  postgres_data:
+  mysql_data:
   letsencrypt_data:

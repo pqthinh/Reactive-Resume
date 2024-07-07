@@ -11,11 +11,11 @@ services:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-resume}
-      MYSQL_USER: ${MYSQL_USER:-root}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_USER: ${MYSQL_USER:-appuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-admin@123}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-admin@123}
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${MYSQL_USER:-root} --password=${MYSQL_PASSWORD:-password}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${MYSQL_USER:-appuser} --password=${MYSQL_PASSWORD:-admin@123}"]
       interval: 10s
       timeout: 5s
       retries: 5

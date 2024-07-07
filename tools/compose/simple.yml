@@ -5,18 +5,19 @@ version: "3.8"
 # If these ports are changed, ensure that the env vars passed to the app are also changed accordingly.
 
 services:
-  # Database (Postgres)
-  postgres:
-    image: postgres:16-alpine
+  # Database (MySQL)
+  mysql:
+    image: mysql:8.0
     restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      MYSQL_DATABASE: resume
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: admin@123
+      MYSQL_ROOT_PASSWORD: admin@123
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u appuser --password=admin@123"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -51,7 +52,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
+      - mysql
       - minio
       - chrome
     environment:
@@ -67,8 +68,8 @@ services:
       CHROME_TOKEN: chrome_token
       CHROME_URL: ws://chrome:3000
 
-      # -- Database (Postgres) --
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      # -- Database (MySQL) --
+      DATABASE_URL: mysql://appuser:admin@123@localhost:3306/resume
 
       # -- Auth --
       ACCESS_TOKEN_SECRET: access_token_secret
@@ -108,4 +109,4 @@ services:
 
 volumes:
   minio_data:
-  postgres_data:
+  mysql_data:
